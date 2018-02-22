@@ -3,7 +3,7 @@
 > A Live RealTime Weather of tokyo created by Ciro Chang. (Also you can view the weather of next 5 days).
 The live video is recording by this youtube channel: https://www.youtube.com/watch?v=JYBpu1OyP0c
 
-## Dependency
+## Another Project Dependency
 
 To run this project you need to run the weather-proxy-api too.
 
@@ -24,3 +24,5 @@ npm install
 # serve with hot reload at localhost:8080
 npm run dev
 ```
+
+obs: I used node v9.3.0 and npm 5.5.1
