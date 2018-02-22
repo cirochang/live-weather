@@ -48,6 +48,20 @@ export default {
     updateTime() {
       this.tokyoTime = moment().tz("Asia/Tokyo").format("h:mm:ss a");
     },
+    updateCurrentWeather() {
+      this.$store.dispatch("updateCurrentWeather", this.cityName).then(() => {
+        this.currentWeather = this.$store.getters.currentWeather;
+      }).catch((error) => {
+        console.log(error);
+      });
+    },
+    updateForecast() {
+      this.$store.dispatch("updateForecast", this.cityName).then(() => {
+        this.weatherDays = this.$store.getters.forecast.list.filter(this.isAHalfDayWeather);
+      }).catch((error) => {
+        console.log(error);
+      });
+    },
     isAHalfDayWeather(weather) {
       return weather.dt_txt.endsWith("12:00:00");
     },
@@ -60,20 +74,17 @@ export default {
   },
   beforeMount() {
     this.updateTime();
-    this.interval = setInterval(() => {this.updateTime();}, 1000);
-    this.$store.dispatch("updateCurrentWeather", this.cityName).then(() => {
-      this.currentWeather = this.$store.getters.currentWeather;
-    }).catch((error) => {
-      console.log(error);
-    });
-    this.$store.dispatch("updateForecast", this.cityName).then(() => {
-      this.weatherDays = this.$store.getters.forecast.list.filter(this.isAHalfDayWeather);
-    }).catch((error) => {
-      console.log(error);
-    });
+    this.updateCurrentWeather();
+    this.updateForecast();
+    this.intervalTime = setInterval(() => {this.updateTime();}, 1000);
+    this.intervalWeathers = setInterval(() => {
+      this.updateCurrentWeather();
+      this.updateForecast();
+    }, 10000);
   },
   beforeDestroy: function(){
-    clearInterval(this.interval);
+    clearInterval(this.intervalTime);
+    clearInterval(this.intervalWeathers);
   }
 }
 </script>
