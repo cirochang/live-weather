@@ -3,6 +3,7 @@
 html,
 body{
     min-height: 100vh;
+    overflow: hidden;
 }
 body{
     color: rgb(200,200,200);

@@ -5,7 +5,7 @@
   "author": "Ciro Chang <cirochang@live.com>",
   "private": true,
   "scripts": {
-    "dev": "cross-env NODE_ENV=development webpack-dev-server --open --disable-host-check --hot --inline --port 8080 --host 0.0.0.0"
+    "dev": "cross-env NODE_ENV=development webpack-dev-server --open --disable-host-check --hot --inline --port 8082 --host 0.0.0.0"
   },
   "dependencies": {
     "animate.css": "^3.5.2",
