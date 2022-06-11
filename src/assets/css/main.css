@@ -47,6 +47,7 @@ body{
     width: 200px;
     padding: 16px;
     margin-bottom: 60px;
+    margin: 20px;
     text-align: center;
     background-color: rgb(25,35,45);
     box-sizing: border-box;
@@ -55,6 +56,7 @@ body{
     backface-visibility: hidden;
     opacity: 0.4;
 }
+
 .card:hover{
     box-shadow: 0 0 20px 10px rgb(5,15,25);
     z-index: 2;
@@ -232,11 +234,21 @@ body{
   width: 100%;
   overflow: auto;
   padding: 20px;
+
+  position: relative;
+    margin: auto;
+    overflow: visible;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    perspective: 1000px;
+    transform-style: preserve-3d;
 }
 
 .icon-bar i {
   float: left;
-  width: 20%;
+  width: 17%;
   text-align: center;
   padding: 12px 0;
   transition: all 0.3s ease;
@@ -245,7 +257,13 @@ body{
   opacity: 0.5;
 
   box-sizing: border-box;
+
   backface-visibility: hidden;
+  background-color: rgb(25,35,45);
+  opacity: 0.7;
+  box-shadow: 0 0 20px 10px rgb(5,15,25);
+  z-index: 2;
+  margin: 10px;
 }
 
 .icon-bar i:hover {
@@ -253,4 +271,8 @@ body{
   opacity: 0.9;
   box-shadow: 0 0 20px 10px rgb(5,15,25);
   z-index: 2;
+}
+
+.icon-bar:hover:not(span){
+    color: #FFAC33;
 }

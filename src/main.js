@@ -19,7 +19,7 @@ Vue.use(VueRouter);
 // Register routes
 const routes = [
   {
-    path: '/',
+    path: '/:cityName',
     component: WeatherWeek,
     name: 'Home',
   }

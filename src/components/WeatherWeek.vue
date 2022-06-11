@@ -1,12 +1,12 @@
 <template>
 <div id="v-weather-week">
   <div style="position: fixed; z-index: -99; width: 100%; height: 100%">
-    <iframe frameborder="0" height="100%" width="100%" src="//youtube.com/embed/JYBpu1OyP0c?autoplay=1&controls=0&showinfo=0&autohide=1&loop=1">
+    <iframe v-if="this.liveVideos" frameborder="0" height="100%" width="100%" v-bind:src="'//youtube.com/embed/' + videoId + '?autoplay=1&mute=1&controls=0&showinfo=0&autohide=1&loop=1'">
   </iframe>
   </div>
 
   <div class="icon-bar" v-if="this.currentWeather">
-    <i class="wi wi-time-4"> {{this.tokyoTime}}</i>
+    <i class="wi wi-time-4"> {{this.timeNow}}</i>
     <i class="wi wi-thermometer"> {{kelvinToCelsius(this.currentWeather.main.temp)+'°'}}</i>
     <i class="wi wi-strong-wind"> {{this.currentWeather.wind.speed}}</i>
     <i class="wi wi-barometer"> {{this.currentWeather.main.pressure}}</i>
@@ -30,6 +30,7 @@
 import DayCard from './DayCard.vue';
 import moment from 'moment-timezone';
 import { mapGetters } from 'vuex'
+import cityTimezones from 'city-timezones';
 
 
 export default {
@@ -38,15 +39,45 @@ export default {
   },
   data: () => {
     return {
-      tokyoTime: null,
-      cityName: process.env.CITY_NAME,
+      timeNow: null,
       currentWeather: null,
-      weatherDays: null
+      weatherDays: null,
+      liveVideos: null
+    }
+  },
+  computed: {
+    timezoneOffsetMinutes() {
+      if(!this.currentWeather) {
+        return null;
+      }
+      return this.currentWeather.timezone / 60;
+    },
+    cityName() {
+      return this.$route.params.cityName;
+    },
+    videoId() {
+      if(!this.liveVideos || !this.liveVideos.items) {
+        return null
+      }
+      if(this.liveVideos.items.length < 1) {
+        return null
+      }
+      return this.liveVideos.items[0].id.videoId;
     }
   },
   methods: {
     updateTime() {
-      this.tokyoTime = moment().tz("Asia/Tokyo").format("h:mm:ss a");
+      if(!this.timezoneOffsetMinutes) {
+        return null;
+      }
+      this.timeNow = moment().utcOffset(this.timezoneOffsetMinutes).format("h:mm:ss a");
+    },
+    updateLiveVideos() {
+      this.$store.dispatch("updateLiveVideos", this.cityName).then(() => {
+        this.liveVideos = this.$store.getters.liveVideos;
+      }).catch((error) => {
+        console.log(error);
+      });
     },
     updateCurrentWeather() {
       this.$store.dispatch("updateCurrentWeather", this.cityName).then(() => {
@@ -73,9 +104,12 @@ export default {
     }
   },
   beforeMount() {
+    window.addEventListener('popstate', this.updateLiveVideos);
+
     this.updateTime();
     this.updateCurrentWeather();
     this.updateForecast();
+    this.updateLiveVideos();
     this.intervalTime = setInterval(() => {this.updateTime();}, 1000);
     this.intervalWeathers = setInterval(() => {
       this.updateCurrentWeather();
@@ -83,6 +117,7 @@ export default {
     }, 10000);
   },
   beforeDestroy: function(){
+    window.removeEventListener('popstate', this.updateLiveVideos);
     clearInterval(this.intervalTime);
     clearInterval(this.intervalWeathers);
   }
